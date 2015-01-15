@@ -7,10 +7,10 @@ SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 OPTION(CACHE "Build LRU Cache plugin" ON)
 OPTION(CHRONO "Build Chrono Service plugin" ON)
 OPTION(DOCKER "Build Docker Isolation plugin" ON)
-OPTION(ELASTICSEARCH "Build ElasticSearch Service plugin" ON)
+OPTION(ELASTICSEARCH "Build ElasticSearch Service plugin" OFF)
 OPTION(IPVS "Build IPVS Gateway Service plugin" ON)
 OPTION(MONGO "Build MongoDB Storage plugin" OFF)
-OPTION(URLFETCH "Build URLFetch Service plugin" ON)
+OPTION(URLFETCH "Build URLFetch Service plugin" OFF)
 
 ADD_DEFINITIONS(-DBLACKHOLE_HEADER_ONLY)
 
