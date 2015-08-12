@@ -24,6 +24,7 @@
 #include "docker_client.hpp"
 
 #include <cocaine/api/isolate.hpp>
+#include <boost/thread.hpp>
 
 #include <mutex>
 namespace cocaine { namespace isolate {
@@ -38,6 +39,10 @@ public:
 
     virtual
    ~docker_t();
+
+    virtual
+    std::unique_ptr<api::cancellation_t>
+    async_spool(std::function<void(const std::error_code&)> handler);
 
     virtual
     void
@@ -62,6 +67,9 @@ private:
     std::string m_network_mode;
     rapidjson::Value m_additional_capabilities;
     rapidjson::Value::AllocatorType m_json_allocator;
+
+    std::function<void(const std::error_code&)> m_spool_done_handler;
+    std::unique_ptr<boost::thread> m_spool_thread;
 };
 
 }} // namespace cocaine::isolate

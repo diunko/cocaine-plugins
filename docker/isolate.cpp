@@ -186,10 +186,25 @@ docker_t::~docker_t() {
     // pass
 }
 
+std::unique_ptr<api::cancellation_t>
+docker_t::async_spool(std::function<void(const std::error_code&)> handler) {
+    m_spool_done_handler = handler;
+
+    m_spool_thread.reset(new boost::thread([this]{ spool(); }));
+
+    return std::make_unique<api::cancellation_t>();
+}
+
 void
 docker_t::spool() {
     if(m_do_pool) {
-        m_docker_client.pull_image(m_image, m_tag);
+        try {
+            m_docker_client.pull_image(m_image, m_tag);
+        } catch(const std::exception& e) {
+            get_io_service().post(std::bind(m_spool_done_handler, std::error_code(-123, std::generic_category())));
+            return;
+        }
+        get_io_service().post(std::bind(m_spool_done_handler, std::error_code()));
     }
 }
 
